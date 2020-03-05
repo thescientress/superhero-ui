@@ -122,7 +122,7 @@
         }
 
         backendInstance.setProfileImage(this.account, data, true, headers)
-        .then(async (response) => {
+          .then(async (response) => {
 
           console.log(response)
 
@@ -135,9 +135,9 @@
             signature: signedChallenge
           }
 
-          backendInstance.setProfileImage(this.account, respondChallenge, false).then((result) => {
+          backendInstance.setProfileImage(this.account, respondChallenge, false)
+            .then((result) => {
             console.log(result);
-            // this.$emit('updateComment', result)
           }).catch(console.error)
         })
       },
