@@ -43,6 +43,13 @@ export default class Backend {
   getProfileImage = async (address) => wrapTry(async () => {
     return fetch(`${this.BACKEND_URL}/profile/image/` + address);
   });
+  setProfileImage = async (address, data, image = true, headers = {'Content-Type': 'application/json'}) => wrapTry(async () => {
+    return fetch(`${this.BACKEND_URL}/profile/image/` + address, {
+      method: 'post',
+      body: image ? data : JSON.stringify(data),
+      headers: headers
+    });
+  });
   getStats = async () => wrapTry(async () => {
     return fetch(`${this.BACKEND_URL}/static/stats/`);
   })

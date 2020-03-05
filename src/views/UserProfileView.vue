@@ -20,20 +20,20 @@
                   <span class="sr-only">Loading...</span>
                 </div>
               </div>
-              <!-- <label for="file-input" v-if="editMode" class="position-relative profile__image--edit" v-bind:class="[loadingAvatar ? 'blurred' : '']"> -->
+              <label for="file-input" v-if="editMode" class="position-relative profile__image--edit" v-bind:class="[loadingAvatar ? 'blurred' : '']">
                 <img v-bind:src="avatar"/>
-                <!-- <div>Change Avatar</div> -->
-              <!-- </label> -->
-              <!-- <div v-bind:class="[loadingAvatar ? 'blurred' : '']">
+                <div>Change Avatar</div>
+              </label>
+              <div v-bind:class="[loadingAvatar ? 'blurred' : '']">
                 <img v-bind:src="avatar" v-if="!editMode">
-              </div> -->
-              <!-- <input id="file-input" type="file" name="avatar" v-if="editMode" accept="image/png, image/jpeg"> -->
+              </div>
+              <input id="file-input" type="file" name="avatar" @change="uploadImage($event)" v-if="editMode" accept="image/png, image/jpeg">
             </div>
             <div class="profile__info">
               <h1 class="profile__displayname" v-if="!editMode">{{profile.displayName}}</h1>
-              <!-- <div class="input-group" v-if="editMode">
+              <div class="input-group" v-if="editMode">
                 <input type="text" v-model="profile.displayName" class="form-control" placeholder="Edit Display Name">
-              </div> -->
+              </div>
               <a class="profile__username" v-if="!editMode">{{userName}}</a>
             </div>
             <div class="profile__description" v-if="!editMode">{{profile.biography}}</div>
@@ -112,6 +112,35 @@
       ...mapGetters(['current', 'account'])
     },
     methods: {
+      uploadImage(event) {
+        let data = new FormData();
+        data.append('name', 'file');
+        data.append('image', event.target.files[0]);
+        
+        let headers = {
+          'Content-Type': "image/png"
+        }
+
+        backendInstance.setProfileImage(this.account, data, true, headers)
+        .then(async (response) => {
+
+          console.log(response)
+
+          console.log("challenge => ", response.challenge);
+          console.log("signing with => ", wallet.client.rpcClient.getCurrentAccount())
+         
+          let signedChallenge = await wallet.signMessage(response.challenge)
+          let respondChallenge = {
+            challenge: response.challenge,
+            signature: signedChallenge
+          }
+
+          backendInstance.setProfileImage(this.account, respondChallenge, false).then((result) => {
+            console.log(result);
+            // this.$emit('updateComment', result)
+          }).catch(console.error)
+        })
+      },
       openExplorer(address) {
         return this.explorerUrl + address
       },
