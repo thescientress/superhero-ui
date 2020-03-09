@@ -118,7 +118,7 @@
         data.append('image', event.target.files[0]);
         
         let headers = {
-          'Content-Type': "image/png"
+          'Content-Type': "multipart/form-data"
         }
 
         backendInstance.setProfileImage(this.account, data, true, headers)
