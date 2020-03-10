@@ -7,7 +7,8 @@
     "build:stats": "webpack --config ./webpack.prod.js  --profile --json > stats.json",
     "test:e2e": "cypress run",
     "test:server": "PRIVATE_KEY=7c6e602a94f30e4ea7edabe4376314f69ba7eaa2f355ecedb339df847b6f0d80575f81ffb0a297b7725dc671da0b1769b1fc5cbe45385c7b5ad1fc2eaf1d609d PUBLIC_KEY=ak_fUq2NesPXcYZ1CcqBcGC3StpdnQw3iVxMA3YSeCNAwfN4myQk webpack --config ./webpack.test.js --progress && serve ./dist -l 8081",
-    "test": "start-server-and-test test:server http://localhost:8081 test:e2e"
+    "test": "start-server-and-test test:server http://localhost:8081 test:e2e",
+    "cypress": "cypress"
   },
   "license": "ISC",
   "dependencies": {
