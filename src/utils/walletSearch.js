@@ -1,9 +1,10 @@
 /* globals Cypress */
 
-import { Node, RpcAepp } from '@aeternity/aepp-sdk/es';
-import Detector from '@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/wallet-detector';
-import BrowserWindowMessageConnection from '@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/connection/browser-window-message';
 import { MemoryAccount, Universal } from '@aeternity/aepp-sdk';
+import { Node, RpcAepp } from '@aeternity/aepp-sdk/es';
+import BrowserWindowMessageConnection from '@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/connection/browser-window-message';
+import Detector from '@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/wallet-detector';
+import { v4 as uuidv4 } from 'uuid';
 import aeternity from './aeternity';
 
 // Send wallet connection info to Aepp through content script
@@ -29,6 +30,16 @@ export const wallet = {
       detector.stopScan();
       await this.client.connectToWallet(await newWallet.getConnection());
       await this.client.subscribeAddress('subscribe', 'current');
+      
+      // crypto auth
+      const challengeString = uuidv4();
+      console.log('Challenge string: ', challengeString);
+      const signedChallenge = await this.signMessage(challengeString);
+      console.log('Signed challenge: ', signedChallenge);
+      
+      const verifySignedChallenge = await this.client.verifyMessage(challengeString, signedChallenge, { onAccount: this.client.rpcClient.getCurrentAccount() });
+      console.log(verifySignedChallenge)
+
       aeternity.client = this.client;
       await aeternity.initProvider(true);
       successCallback();
